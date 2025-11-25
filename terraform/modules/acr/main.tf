@@ -1,4 +1,3 @@
-
 resource "azurerm_container_registry" "acr" {
   name                = var.acr_name
   resource_group_name = var.resource_group_name
@@ -6,4 +5,5 @@ resource "azurerm_container_registry" "acr" {
   sku                 = var.sku
   admin_enabled       = var.admin_enabled
   tags                = var.tags
+  # login_server        = var.login_server
 }

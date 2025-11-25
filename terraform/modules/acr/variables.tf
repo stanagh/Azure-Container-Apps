@@ -30,3 +30,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+# variable "login_server" {
+#   description = "The login server of the Container Registry"
+#   type        = string
+# }

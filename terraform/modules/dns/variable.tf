@@ -16,23 +16,15 @@ variable "dns_name" {
 
 }
 
-variable "a_record_name" {
+variable "cname_record_name" {
   description = "The name of the A record to create within the DNS zone."
   type        = string
 
 }
 
-variable "allocation_method" {
-  description = "The allocation method for the public IP address. Valid options are 'Static' and 'Dynamic'."
+variable "cname_record_value" {
+  description = "The value of the CNAME record."
   type        = string
-  default     = "Static"
-
-}
-
-variable "public_ip_sku" {
-  description = "The SKU of the public IP address. Valid options are 'Basic' and 'Standard'."
-  type        = string
-  default     = "Standard"
 
 }
 
@@ -43,22 +35,9 @@ variable "tags" {
 
 }
 
-
-variable "public_ip_name" {
-  description = "The name of the public IP address resource."
-  type        = string
-
-}
-
 variable "ttl" {
   description = "The TTL (time to live) of the DNS A record in seconds."
   type        = number
   default     = 300
 }
 
-variable "records" {
-  description = "A list of IP addresses for the A record."
-  type        = list(string)
-  default     = ["10.0.180.17"]
-
-}

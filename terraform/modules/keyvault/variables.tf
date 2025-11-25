@@ -20,10 +20,10 @@ variable "tags" {
   default     = {}
 }
 
-variable "tenant_id" {
-  description = "The Tenant ID that should be used for authenticating requests to the Key Vault."
-  type        = string
-}
+# variable "tenant_id" {
+#   description = "The Tenant ID that should be used for authenticating requests to the Key Vault."
+#   type        = string
+# }
 
 variable "sku_name" {
   description = "The SKU name to use for this Key Vault. Possible values are 'standard' and 'premium'."
@@ -35,61 +35,45 @@ variable "soft_delete_retention_days" {
   type        = number
 }
 
-variable "purge_protection_enabled" {
-  description = "Is Purge Protection enabled for this Key Vault? Defaults to false."
-  type        = bool
-  default     = true
-}
-
-variable "enabled_for_disk_encryption" {
-  description = "Is disk encryption enabled for this Key Vault? Defaults to false."
-  type        = bool
-}
-
-variable "bypass" {
-  description = "Specifies which traffic can bypass the network rules. Possible values are 'AzureServices', 'None' and 'Logging'. Defaults to 'AzureServices'."
+variable "sp_object_id" {
+  description = "The principal ID of the Service Principal that will be granted access to the Key Vault."
   type        = string
-  default     = "AzureServices"
-
+  
 }
 
-variable "default_action" {
-  description = "Specifies the default action of allow or deny when no other rules match. Possible values are 'Allow' and 'Deny'"
-  default     = "Allow"
-
-}
-
-variable "key_vault_secret_grafana" {
-  description = "The name of the Key Vault secret to store the Grafana admin password."
+variable "sp_role_definition_name" {
+  description = "The name of the role definition to assign to the service principal."
   type        = string
-  default     = "grafana-admin-password"
-}
-
-
-variable "grafana_admin_password" {
-  description = "The Grafana admin password to store in Key Vault."
-  type        = string
-  default     = "random_password.grafana_admin.result"
-}
-
-# variable "role_definition_name" {
-#   description = "The name of the role definition to assign to the principal."
-#   type        = string
-# }
-
-variable "rbac_authorization_enabled" {
-  description = "Is RBAC Authorization enabled for this Key Vault? Defaults to true."
-  type        = bool
-  default     = true
 }
 
 variable "role_definition_name" {
   description = "The name of the role definition to assign to the principal."
   type        = string
-  default     = "Key Vault Secrets Officer"
 }
 
-variable "principal_id" {
-  description = "The principal id of the service principal"
+variable "rbac_authorization_enabled" {
+  description = "Is RBAC Authorization enabled for this Key Vault? Defaults to true."
+  type        = bool
+}
+variable "container_app_principal_id" {
+  description = "The principal ID of the Container App's managed identity that will be granted access to the Key Vault."
   type        = string
+}
+
+variable "mongo_connection_string" {
+  description = "The connection string for MongoDB"
+  type        = string
+  default     = ""
+}
+
+variable "weather_api_key" {
+  description = "API key for the weather service"
+  type        = string
+  default     = ""
+}
+
+variable "mongo_db_name" {
+  description = "The name of the MongoDB database"
+  type        = string
+  default     = ""
 }
