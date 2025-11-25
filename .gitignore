@@ -17,6 +17,9 @@ myparams.json
 *.terraform/terraform.tfstate.backup
 *.terraform/log
 
+*terraform.tfvars
+*.tfstate
+*.tfvars 
 
 
 
