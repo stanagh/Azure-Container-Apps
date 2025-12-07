@@ -14,6 +14,11 @@ output "container_app_id" {
 }
 
 output "ca_latest_revision_fqdn" {
-  description = "The FQDN of the latest revision of the Container App" 
+  description = "The FQDN of the latest revision of the Container App"
   value       = azurerm_container_app.ca.latest_revision_fqdn
+}
+
+output "container_app_hostname" {
+  description = "The hostname of the Container App"
+  value       = azurerm_container_app.ca.ingress[0].fqdn
 }

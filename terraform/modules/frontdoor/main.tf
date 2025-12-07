@@ -1,7 +1,29 @@
+resource "azurerm_dns_txt_record" "fd_validation" {
+  name                = join(".", ["_dnsauth", "app"])
+  zone_name           = var.dns_zone_name
+  resource_group_name = var.resource_group_name
+  ttl                 = 300
+
+  record {
+    value = azurerm_cdn_frontdoor_custom_domain.fdcustom_domain.validation_token
+  }
+}
+
+resource "azurerm_dns_cname_record" "app" {
+  name                = var.cname_record_name
+  zone_name           = var.dns_zone_name
+  resource_group_name = var.resource_group_name
+  ttl                 = var.ttl
+  record              = azurerm_cdn_frontdoor_endpoint.fdendpoint.host_name
+
+  depends_on = [azurerm_cdn_frontdoor_route.fdroute]
+}
+
+
 resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   name                = var.fdprofile_name
   resource_group_name = var.resource_group_name
-  sku_name            = var.sku_name # e.g., "Standard_AzureFrontDoor"
+  sku_name            = var.sku_name
 }
 
 
@@ -23,23 +45,24 @@ resource "azurerm_cdn_frontdoor_origin" "fdorigin" {
 
   certificate_name_check_enabled = false
 
+  
   host_name          = var.origin_host_name
   origin_host_header = var.origin_host_name
   http_port          = 80
   https_port         = 443
   priority           = 1
   weight             = 1
-  # to be filled as needed
 }
 
 resource "azurerm_cdn_frontdoor_endpoint" "fdendpoint" {
   name                     = var.fdendpoint_name
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
   tags                     = var.tags
+
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain" "fdcustom_domain" {
-  name                     =  replace(var.host_name, ".", "-")
+  name                     = replace(var.host_name, ".", "-")
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
   dns_zone_id              = var.dns_zone_id
   host_name                = var.host_name

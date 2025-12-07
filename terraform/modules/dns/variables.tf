@@ -16,17 +16,6 @@ variable "dns_zone_name" {
 
 }
 
-variable "cname_record_name" {
-  description = "The name of the A record to create within the DNS zone."
-  type        = string
-
-}
-
-variable "cname_record_value" {
-  description = "The value of the CNAME record."
-  type        = string
-
-}
 
 variable "tags" {
   description = "A mapping of tags to assign to the resource."
@@ -35,9 +24,5 @@ variable "tags" {
 
 }
 
-variable "ttl" {
-  description = "The TTL (time to live) of the DNS A record in seconds."
-  type        = number
-  default     = 300
-}
+
 

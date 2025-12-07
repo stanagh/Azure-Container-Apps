@@ -114,7 +114,7 @@ variable "key_vault_name" {
 variable "user_assigned_ids" {
   description = "List of User Assigned Identity IDs"
   type        = list(string)
-  
+
 }
 
 variable "uai_id" {

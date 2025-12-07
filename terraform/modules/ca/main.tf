@@ -15,16 +15,16 @@ resource "azurerm_container_app" "ca" {
 
 
   identity {
-    type         = var.identity_type                        
-    identity_ids = var.user_assigned_ids                    
+    type         = var.identity_type
+    identity_ids = var.user_assigned_ids
   }
 
 
   registry {
-    server = var.acr_login_server
+    server   = var.acr_login_server
     identity = var.uai_id
-    }
-  
+  }
+
   secret {
     name                = "mongo-connstr"
     key_vault_secret_id = var.mongo_connection_string
@@ -50,12 +50,14 @@ resource "azurerm_container_app" "ca" {
   }
 
   secret {
-    name                = "appinsights-connstr"
-    value               = var.application_insights_connection_string
+    name  = "appinsights-connstr"
+    value = var.application_insights_connection_string
 
   }
 
   template {
+    min_replicas = 1
+    max_replicas = 3
     container {
       name   = var.container_app_name
       image  = var.container_app_image
@@ -84,7 +86,7 @@ resource "azurerm_container_app" "ca" {
       }
 
       env {
-        name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
+        name        = "APPLICATIONINSIGHTS_CONNECTION_STRING"
         secret_name = "appinsights-connstr"
       }
 

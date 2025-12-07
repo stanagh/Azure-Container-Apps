@@ -17,7 +17,7 @@ output "instrumentation_key" {
 output "connection_string" {
   description = "The connection string of the Application Insights resource"
   value       = azurerm_application_insights.application_insights.connection_string
-  
+
 }
 
 output "app_id" {

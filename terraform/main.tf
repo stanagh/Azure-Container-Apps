@@ -1,4 +1,3 @@
-
 data "azurerm_client_config" "current" {}
 
 resource "random_integer" "suffix" {
@@ -6,11 +5,17 @@ resource "random_integer" "suffix" {
   max = 9999
 }
 
-
 resource "azurerm_resource_group" "rg" {
   name     = local.rg_name
   location = local.location
   tags     = local.tags
+}
+
+resource "azurerm_user_assigned_identity" "ca_uai" {
+  name                = "${local.region}-uai-ca-${random_integer.suffix.result}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  tags                = local.tags
 }
 
 module "azuread_application_registration" {
@@ -19,17 +24,6 @@ module "azuread_application_registration" {
   sign_in_audience      = "AzureADandPersonalMicrosoftAccount"
   platform_type         = "PublicClient"
   public_client_enabled = true
-}
-
-module "dns" {
-  source              = "./modules/dns"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  dns_zone_name       = local.domain_name
-  cname_record_name   = "app"
-  cname_record_value  = module.frontdoor.endpoint_hostname
-  ttl                 = 300
-  tags                = local.tags
 }
 
 module "acr" {
@@ -42,20 +36,11 @@ module "acr" {
   tags                = local.tags
 }
 
-
-resource "azurerm_user_assigned_identity" "ca_uai" {
-  name                = "${local.region}-uai-ca-${random_integer.suffix.result}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  tags                = local.tags
-}
-
 resource "azurerm_role_assignment" "acr_pull" {
   principal_id         = azurerm_user_assigned_identity.ca_uai.principal_id
   role_definition_name = "AcrPull"
   scope                = module.acr.acr_id
 }
-
 
 module "app_insights" {
   source              = "./modules/appi"
@@ -102,7 +87,7 @@ module "container_apps" {
 
   acr_login_server = module.acr.login_server
   acr_id           = module.acr.acr_id
-  uai_id           = azurerm_user_assigned_identity.ca_uai.client_id
+  uai_id           = azurerm_user_assigned_identity.ca_uai.id
 
 
   log_analytics_id  = module.app_insights.log_analytics_workspace_id
@@ -121,6 +106,14 @@ module "container_apps" {
   application_client_ID                  = module.azuread_application_registration.client_id
 }
 
+module "dns" {
+  source              = "./modules/dns"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  dns_zone_name       = local.domain_name
+
+  tags = local.tags
+}
 
 module "frontdoor" {
   source              = "./modules/frontdoor"
@@ -128,15 +121,19 @@ module "frontdoor" {
   location            = azurerm_resource_group.rg.location
   tags                = local.tags
 
-  dns_zone_id = module.dns.dns_zone_id
+  dns_zone_id       = module.dns.dns_zone_id
+  dns_zone_name     = module.dns.dns_zone_name
+  cname_record_name = "app"
+  # cname_record_value         = module.container_apps.ca_latest_revision_fqdn
+  ttl = 300
 
-  fdprofile_name               = "${local.region}-fd-${local.environment}-${random_integer.suffix.result}"
-  fdendpoint_name              = "${local.region}-fde-${random_integer.suffix.result}"
-  fdorigin_group_name          = "${local.region}-fdog-${random_integer.suffix.result}"
-  fdroute_name                 = "${local.region}-fdr-${random_integer.suffix.result}"
-  host_name                    = "app.${local.domain_name}"
+  fdprofile_name      = "${local.region}-fd-${local.environment}-${random_integer.suffix.result}"
+  fdendpoint_name     = "${local.region}-fde-${random_integer.suffix.result}"
+  fdorigin_group_name = "${local.region}-fdog-${random_integer.suffix.result}"
+  fdroute_name        = "${local.region}-fdr-${random_integer.suffix.result}"
+  host_name           = "app.${local.domain_name}"
 
   origin_name      = "${local.region}-fdo-${random_integer.suffix.result}"
-  origin_host_name = module.container_apps.ca_latest_revision_fqdn
+  origin_host_name = module.container_apps.container_app_hostname
 
 }

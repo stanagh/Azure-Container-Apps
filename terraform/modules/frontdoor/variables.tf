@@ -1,3 +1,20 @@
+variable "cname_record_name" {
+  description = "The name of the A record to create within the DNS zone."
+  type        = string
+
+}
+
+# variable "cname_record_value" {
+#   description = "The value of the CNAME record."
+#   type        = string
+# }
+
+variable "ttl" {
+  description = "The TTL (time to live) of the DNS A record in seconds."
+  type        = number
+  default     = 300
+}
+
 variable "resource_group_name" {
   description = "The name of the resource group"
   type        = string
@@ -8,20 +25,10 @@ variable "location" {
   type        = string
 }
 
-# variable "dns_zone_name" {
-#   description = "The name of the DNS zone"
-#   type        = string
-# }
-
-# variable "cname_record_name" {
-#   description = "The name of the CNAME record"
-#   type        = string
-# }
-
-# variable "cname_record_value" {
-#   description = "The value of the CNAME record"
-#   type        = string
-# }
+variable "dns_zone_name" {
+  description = "The name of the DNS zone"
+  type        = string
+}
 
 variable "fdprofile_name" {
   description = "The name of the Front Door profile"
