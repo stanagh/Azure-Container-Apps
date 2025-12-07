@@ -8,10 +8,10 @@ variable "location" {
   type        = string
 }
 
-variable "dns_zone_name" {
-  description = "The name of the DNS zone"
-  type        = string
-}
+# variable "dns_zone_name" {
+#   description = "The name of the DNS zone"
+#   type        = string
+# }
 
 variable "log_analytics_id" {
   description = "The ID of the Log Analytics Workspace"
@@ -33,10 +33,10 @@ variable "container_app_image" {
   type        = string
 }
 
-variable "custom_domain_name" {
-  description = "The custom domain name for the Container App"
-  type        = string
-}
+# variable "custom_domain_name" {
+#   description = "The custom domain name for the Container App"
+#   type        = string
+# }
 
 variable "tags" {
   description = "A mapping of tags to assign to the resource."
@@ -60,34 +60,64 @@ variable "acr_id" {
   type        = string
 }
 
-variable "acr_admin_username" {
-  description = "ACR admin username"
+# variable "acr_admin_username" {
+#   description = "ACR admin username"
+#   type        = string
+# }
+
+# variable "acr_admin_password" {
+#   description = "ACR admin password"
+#   type        = string
+#   sensitive   = true
+# }
+
+# variable "custom_domain_subdomain" {
+#   description = "Subdomain for TXT verification"
+#   type        = string
+# }
+
+variable "mongo_connection_string" {
+  description = "The connection string for MongoDB"
   type        = string
 }
-
-variable "acr_admin_password" {
-  description = "ACR admin password"
-  type        = string
-  sensitive   = true
-}
-
-variable "custom_domain_subdomain" {
-  description = "Subdomain for TXT verification"
-  type        = string
-}
-
 
 variable "application_client_ID" {
   description = "The Client ID of the Entra application"
   type        = string
 }
 
-variable "app_insights_connection_string" {
+variable "weather_api_key" {
+  description = "API key for the weather service"
+  type        = string
+}
+
+variable "mongo_db_name" {
+  description = "The name of the MongoDB database"
+  type        = string
+}
+
+variable "redis_connstr_secret_id" {
+  description = "The Key Vault secret ID for the Redis connection string"
+  type        = string
+}
+
+variable "application_insights_connection_string" {
   description = "The connection string for Application Insights"
   type        = string
 }
 
 variable "key_vault_name" {
   description = "The name of the Key Vault"
+  type        = string
+}
+
+variable "user_assigned_ids" {
+  description = "List of User Assigned Identity IDs"
+  type        = list(string)
+  
+}
+
+variable "uai_id" {
+  description = "User Assigned Identity ID for ACR authentication"
   type        = string
 }

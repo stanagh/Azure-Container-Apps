@@ -1,17 +1,4 @@
-#modules/ca/main.tf
-resource "azurerm_dns_txt_record" "dns_txt_record" {
-  name                = "asuid.${var.custom_domain_subdomain}"
-  resource_group_name = var.resource_group_name
-  zone_name           = var.dns_zone_name
-  ttl                 = 300
-
-  record {
-    value = azurerm_container_app.container_app.custom_domain_verification_id
-  }
-}
-
-
-resource "azurerm_container_app_environment" "container_app_environment" {
+resource "azurerm_container_app_environment" "ca_env" {
   name                       = var.container_app_environment_name
   location                   = var.location
   resource_group_name        = var.resource_group_name
@@ -19,53 +6,52 @@ resource "azurerm_container_app_environment" "container_app_environment" {
   tags                       = var.tags
 }
 
-
-
-resource "azurerm_container_app" "container_app" {
+resource "azurerm_container_app" "ca" {
   name                         = var.container_app_name
-  container_app_environment_id = azurerm_container_app_environment.container_app_environment.id
+  container_app_environment_id = azurerm_container_app_environment.ca_env.id
   resource_group_name          = var.resource_group_name
   revision_mode                = "Single"
   tags                         = var.tags
 
+
   identity {
-    type = var.identity_type
+    type         = var.identity_type                        
+    identity_ids = var.user_assigned_ids                    
   }
 
-  secret {
-    name  = "acr-password"
-    value = var.acr_admin_password
-  }
-
-  secret {
-    name = "mongo-connstr"
-    value = "https://${var.key_vault_name}.vault.azure.net/secrets/mongo-connstr"
-  }
-
-  secret {
-    name = "mongo-db-name"
-    value = "https://${var.key_vault_name}.vault.azure.net/secrets/mongo-db-name"
-  }
-
-  secret {
-    name = "weather-api-key"
-    value = "https://${var.key_vault_name}.vault.azure.net/secrets/weather-api-key"
-  }
-
-  secret {
-    name  = "appinsights-connstr"
-    value = var.app_insights_connection_string
-  }
-
-  secret {
-    name  = "entra-app-id"
-    value = var.application_client_ID
-  }
 
   registry {
-    server               = var.acr_login_server
-    username             = var.acr_admin_username
-    password_secret_name = "acr-password"
+    server = var.acr_login_server
+    identity = var.uai_id
+    }
+  
+  secret {
+    name                = "mongo-connstr"
+    key_vault_secret_id = var.mongo_connection_string
+    identity            = var.user_assigned_ids[0]
+  }
+
+  secret {
+    name                = "mongo-db-name"
+    key_vault_secret_id = var.mongo_db_name
+    identity            = var.user_assigned_ids[0]
+  }
+
+  secret {
+    name                = "weather-api-key"
+    key_vault_secret_id = var.weather_api_key
+    identity            = var.user_assigned_ids[0]
+  }
+
+  secret {
+    name                = "redis-connstr"
+    key_vault_secret_id = var.redis_connstr_secret_id
+    identity            = var.user_assigned_ids[0]
+  }
+
+  secret {
+    name                = "appinsights-connstr"
+    value               = var.application_insights_connection_string
 
   }
 
@@ -76,10 +62,6 @@ resource "azurerm_container_app" "container_app" {
       cpu    = 0.25
       memory = "0.5Gi"
 
-      env {
-        name        = "NODE_ENV"
-        value       = "production"
-      }
 
       env {
         name        = "TODO_MONGO_CONNSTR"
@@ -92,40 +74,36 @@ resource "azurerm_container_app" "container_app" {
       }
 
       env {
-        name        = "APPLICATIONINSIGHTS_CONNECTION_STRING"
+        name        = "WEATHER_API_KEY"
+        secret_name = "weather-api-key"
+      }
+
+      env {
+        name        = "REDIS_SESSION_HOST"
+        secret_name = "redis-connstr"
+      }
+
+      env {
+        name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
         secret_name = "appinsights-connstr"
       }
 
       env {
-        name        = "ENTRA_APP_ID"
-        secret_name = "entra-app-id"
-      }
-
-      env {
-        name        = "WEATHER_API_KEY"
-        secret_name = "weather-api-key"
+        name  = "NODE_ENV"
+        value = "production"
       }
     }
   }
 
   ingress {
-    allow_insecure_connections = false
     external_enabled           = true
+    allow_insecure_connections = false
     target_port                = 3000
     transport                  = "http"
+
     traffic_weight {
       latest_revision = true
       percentage      = 100
     }
   }
 }
-
-resource "azurerm_role_assignment" "acr_pull" {
-  principal_id         = azurerm_container_app.container_app.identity[0].principal_id
-  role_definition_name = "AcrPull"
-  scope                = var.acr_id
-}
-
-
-
-

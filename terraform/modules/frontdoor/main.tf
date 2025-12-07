@@ -1,24 +1,6 @@
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
-resource "azurerm_dns_zone" "dns_zone" {
-  name                = var.dns_zone_name
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-resource "azurerm_dns_cname_record" "cname_record" {
-  name                = var.cname_record_name
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = azurerm_resource_group.rg.name
-  ttl                 = 3600
-  record              = azurerm_cdn_frontdoor_endpoint.fdendpoint.host_name
-}
-
 resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   name                = var.fdprofile_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   sku_name            = var.sku_name # e.g., "Standard_AzureFrontDoor"
 }
 
@@ -41,10 +23,10 @@ resource "azurerm_cdn_frontdoor_origin" "fdorigin" {
 
   certificate_name_check_enabled = false
 
-  host_name          = "containerapp-origin"
+  host_name          = var.origin_host_name
+  origin_host_header = var.origin_host_name
   http_port          = 80
   https_port         = 443
-  origin_host_header = "www.contoso.com"
   priority           = 1
   weight             = 1
   # to be filled as needed
@@ -57,9 +39,9 @@ resource "azurerm_cdn_frontdoor_endpoint" "fdendpoint" {
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain" "fdcustom_domain" {
-  name                     = var.frontodoor_custom_domain_name
+  name                     =  replace(var.host_name, ".", "-")
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
-  dns_zone_id              = azurerm_dns_zone.dns_zone.id
+  dns_zone_id              = var.dns_zone_id
   host_name                = var.host_name
 
   tls {
@@ -92,7 +74,7 @@ resource "azurerm_cdn_frontdoor_route" "fdroute" {
   }
 }
 
-resource "azurerm_cdn_frontdoor_custom_domain_association" "association" {
+resource "azurerm_cdn_frontdoor_custom_domain_association" "fd_association" {
   cdn_frontdoor_custom_domain_id = azurerm_cdn_frontdoor_custom_domain.fdcustom_domain.id
   cdn_frontdoor_route_ids        = [azurerm_cdn_frontdoor_route.fdroute.id]
 }

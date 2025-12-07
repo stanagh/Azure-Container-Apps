@@ -16,13 +16,13 @@ output "login_server" {
 
 }
 
-output "admin_username" {
-  description = "The admin username of the Container Registry"
-  value       = azurerm_container_registry.acr.admin_username
-}
+# output "admin_username" {
+#   description = "The admin username of the Container Registry"
+#   value       = azurerm_container_registry.acr.admin_username
+# }
 
-output "admin_password" {
-  description = "The admin password of the Container Registry"
-  value       = azurerm_container_registry.acr.admin_password
-  sensitive   = true
-}
+# output "admin_password" {
+#   description = "The admin password of the Container Registry"
+#   value       = azurerm_container_registry.acr.admin_password
+#   sensitive   = true
+# }

@@ -8,20 +8,20 @@ variable "location" {
   type        = string
 }
 
-variable "dns_zone_name" {
-  description = "The name of the DNS zone"
-  type        = string
-}
+# variable "dns_zone_name" {
+#   description = "The name of the DNS zone"
+#   type        = string
+# }
 
-variable "cname_record_name" {
-  description = "The name of the CNAME record"
-  type        = string
-}
+# variable "cname_record_name" {
+#   description = "The name of the CNAME record"
+#   type        = string
+# }
 
-variable "cname_record_value" {
-  description = "The value of the CNAME record"
-  type        = string
-}
+# variable "cname_record_value" {
+#   description = "The value of the CNAME record"
+#   type        = string
+# }
 
 variable "fdprofile_name" {
   description = "The name of the Front Door profile"
@@ -39,10 +39,10 @@ variable "host_name" {
   type        = string
 }
 
-variable "frontodoor_custom_domain_name" {
-  description = "The name of the Front Door custom domain"
-  type        = string
-}
+# variable "frontdoor_custom_domain_name" {
+#   description = "The name of the Front Door custom domain"
+#   type        = string
+# }
 
 variable "fdendpoint_name" {
   description = "The name of the Front Door endpoint"
@@ -71,5 +71,15 @@ variable "origin_name" {
 
 variable "fdroute_name" {
   description = "The name of the Front Door route"
+  type        = string
+}
+
+variable "dns_zone_id" {
+  description = "The ID of the DNS zone"
+  type        = string
+}
+
+variable "origin_host_name" {
+  description = "The host name of the origin server"
   type        = string
 }

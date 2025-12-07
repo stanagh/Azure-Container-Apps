@@ -14,7 +14,7 @@ output "instrumentation_key" {
   value       = azurerm_application_insights.application_insights.instrumentation_key
 }
 
-output "app_insights_connection_string" {
+output "connection_string" {
   description = "The connection string of the Application Insights resource"
   value       = azurerm_application_insights.application_insights.connection_string
   
@@ -46,5 +46,4 @@ output "workspace_name" {
 output "workspace_location" {
   description = "The location of the Log Analytics workspace"
   value       = azurerm_log_analytics_workspace.log_analytics.location
-
 }
