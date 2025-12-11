@@ -50,8 +50,18 @@ if (process.env.ENTRA_APP_ID) {
 // This login route will redirect to Azure AD start the PKCE auth flow
 router.get('/login', async (req, res) => {
   console.log('### 🔐 MSAL login, start PKCE flow...')
-  const host = req.get('host')
-  const redirectUri = `${host.indexOf('localhost') == 0 ? 'http' : 'https'}://${host}/${AUTH_CALLBACK_PATH}`
+  // const host = req.get('host')
+  // const redirectUri = `${host.indexOf('localhost') == 0 ? 'http' : 'https'}://${host}/${AUTH_CALLBACK_PATH}` #Use this line for local and prod
+    const forwardedHost = req.headers['x-forwarded-host']
+    const host = forwardedHost || req.headers['host']
+
+  const protocol =
+  req.headers['x-forwarded-proto'] ||
+  (host.startsWith('localhost') ? 'http' : 'https')
+
+  const redirectUri = `${protocol}://${host}/${AUTH_CALLBACK_PATH}`
+
+
 
   try {
     // Generate PKCE Codes before starting the authorization flow

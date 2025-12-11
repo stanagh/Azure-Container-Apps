@@ -1,0 +1,40 @@
+name: Terraform destroy infrastructure 
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Type "yes" to confirm destroying infrastructure'
+        required: true
+        default: 'no' # Default to 'no' to prevent accidental destruction
+permissions:
+  id-token: write
+  contents: read
+  
+  
+jobs:
+  terraform-destroy:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: ./terraform      
+        
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Set up Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.5.7
+
+        - name: Login to Azure
+          uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+        - name: Terraform Destroy
+          if: ${{ github.event.inputs.action == 'yes' }}
+          run: terraform destroy --auto-approve

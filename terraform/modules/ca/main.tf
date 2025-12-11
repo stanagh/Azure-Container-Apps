@@ -49,12 +49,6 @@ resource "azurerm_container_app" "ca" {
     identity            = var.user_assigned_ids[0]
   }
 
-  secret {
-    name  = "appinsights-connstr"
-    value = var.application_insights_connection_string
-
-  }
-
   template {
     min_replicas = 1
     max_replicas = 3
@@ -63,8 +57,7 @@ resource "azurerm_container_app" "ca" {
       image  = var.container_app_image
       cpu    = 0.25
       memory = "0.5Gi"
-
-
+      
       env {
         name        = "TODO_MONGO_CONNSTR"
         secret_name = "mongo-connstr"
@@ -86,8 +79,23 @@ resource "azurerm_container_app" "ca" {
       }
 
       env {
-        name        = "APPLICATIONINSIGHTS_CONNECTION_STRING"
-        secret_name = "appinsights-connstr"
+        name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
+        value = var.application_insights_connection_string
+      }
+
+      env {
+        name  = "ENTRA_APP_ID"
+        value = var.application_client_ID
+      }
+
+      env {
+        name  = "WEBSITE_HOSTNAME"
+        value = "app.stanagh.website"
+      }
+
+      env {
+        name  = "BASE_URL"
+        value = "https://app.stanagh.website"
       }
 
       env {
@@ -101,7 +109,7 @@ resource "azurerm_container_app" "ca" {
     external_enabled           = true
     allow_insecure_connections = false
     target_port                = 3000
-    transport                  = "http"
+    transport                  = "auto"
 
     traffic_weight {
       latest_revision = true
@@ -109,3 +117,5 @@ resource "azurerm_container_app" "ca" {
     }
   }
 }
+
+

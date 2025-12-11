@@ -1,0 +1,56 @@
+name: Terraform infrastructure provision 
+
+on:
+  push:
+    paths:
+      - 'terraform/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose the Terraform action to perform: "plan" or "apply"'
+        required: false
+        default: 'plan' # Default to 'plan' for safety
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    terraform:
+      runs-on: ubuntu-latest
+      defaults:
+        run:
+         working-directory: ./terraform
+          
+      steps:
+        - name: Checkout repositorys
+          uses: actions/checkout@v4
+
+        - name: Set up Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.5.7
+
+        - name: Login to Azure
+          uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+        - name: Export Terraform secrets
+          run: |
+           echo "TF_VAR_mongo_connection_string=${{ secrets.MONGO_CONNECTION_STRING }}" >> $GITHUB_ENV
+           echo "TF_VAR_mongo_db_name=${{ secrets.MONGO_DB_NAME }}" >> $GITHUB_ENV
+           echo "TF_VAR_weather_api_key=${{ secrets.WEATHER_API_KEY }}" >> $GITHUB_ENV
+           echo "TF_VAR_redis_connection_string=${{ secrets.REDIS_CONNECTION_STRING }}" >> $GITHUB_ENV
+
+        - name: Terraform Init
+          run: terraform init 
+
+        - name: Terraform Plan
+          if: ${{ github.event_name == 'push' || github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}
+          run: terraform plan
+
+        - name: Terraform Apply
+          if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') }}
+          run: terraform apply --auto-approve

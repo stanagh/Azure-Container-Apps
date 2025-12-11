@@ -1,0 +1,43 @@
+name: Build and Push Image to ACR
+
+on:
+    push:
+     paths:
+      - 'nodejs-demoapp/**'  # Trigger on changes in the application directory
+    workflow_run:
+      workflows: ["Terraform infrastructure provision"]
+      types:
+      - completed
+permissions:
+  id-token: write
+  contents: read 
+  
+jobs:
+  build-and-push:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env: 
+      ACR_NAME: uksouthacrprod001
+      IMAGE_NAME: nodejs-app
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+
+    - name: Log in to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Log in to ACR 
+      run: |
+        az acr login --name ${ACR_NAME}
+    
+    - name: Docker build and push Docker image to ACR
+      run: |
+        docker build -t ${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${IMAGE_TAG} ./nodejs-demoapp
+        docker push ${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${IMAGE_TAG}

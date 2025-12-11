@@ -24,12 +24,23 @@ resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   name                = var.fdprofile_name
   resource_group_name = var.resource_group_name
   sku_name            = var.sku_name
+
+  response_timeout_seconds = 30
 }
 
 
 resource "azurerm_cdn_frontdoor_origin_group" "fdorigin_group" {
   name                     = var.fdorigin_group_name
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
+
+  session_affinity_enabled = false
+
+  health_probe {
+    interval_in_seconds = 30
+    path                = "/healthProbe"
+    protocol            = "Https"
+    request_type        = "HEAD"
+  }
 
   load_balancing {
     additional_latency_in_milliseconds = 0
@@ -45,9 +56,9 @@ resource "azurerm_cdn_frontdoor_origin" "fdorigin" {
 
   certificate_name_check_enabled = false
 
-  
+
   host_name          = var.origin_host_name
-  origin_host_header = var.origin_host_name
+  origin_host_header = var.origin_host_name_header
   http_port          = 80
   https_port         = 443
   priority           = 1
@@ -86,15 +97,17 @@ resource "azurerm_cdn_frontdoor_route" "fdroute" {
   patterns_to_match      = ["/*"]
   supported_protocols    = ["Http", "Https"]
 
+
   cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.fdcustom_domain.id]
   link_to_default_domain          = false
 
   cache {
     query_string_caching_behavior = "IgnoreSpecifiedQueryStrings"
     query_strings                 = ["account", "settings"]
-    compression_enabled           = true
+    compression_enabled           = false
     content_types_to_compress     = ["text/html", "text/javascript", "text/xml"]
   }
+
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain_association" "fd_association" {

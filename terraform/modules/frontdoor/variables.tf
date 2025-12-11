@@ -46,6 +46,11 @@ variable "host_name" {
   type        = string
 }
 
+variable "origin_host_name_header" {
+  description = "The origin host header for the Front Door origin"
+  type        = string
+}
+
 # variable "frontdoor_custom_domain_name" {
 #   description = "The name of the Front Door custom domain"
 #   type        = string

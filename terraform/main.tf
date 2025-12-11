@@ -82,7 +82,7 @@ module "container_apps" {
 
   container_app_environment_name = "ca-env-${local.environment}${random_integer.suffix.result}"
   container_app_name             = "app-${local.environment}${random_integer.suffix.result}"
-  container_app_image            = "${module.acr.login_server}/nodejs-app:v1"
+  container_app_image            = "${module.acr.login_server}/nodejs-app:v1.0"
   # container_app_image = "mcr.microsoft.com/azuredocs/aci-helloworld:latest" #placeholder image for testing
 
   acr_login_server = module.acr.login_server
@@ -135,5 +135,6 @@ module "frontdoor" {
 
   origin_name      = "${local.region}-fdo-${random_integer.suffix.result}"
   origin_host_name = module.container_apps.container_app_hostname
+  origin_host_name_header = module.container_apps.container_app_hostname
 
 }
