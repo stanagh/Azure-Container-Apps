@@ -46,25 +46,36 @@ variable "secret_reader_principal_id" {
   type        = string
 }
 
-variable "mongo_connection_string" {
-  description = "The connection string for the MongoDB database"
-  type        = string
-  sensitive   = true
-}
+# variable "mongo_connection_string" {
+#   description = "The connection string for the MongoDB database"
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "mongo_db_name" {
-  description = "The name of the MongoDB database"
-  type        = string
-}
+# variable "mongo_db_name" {
+#   description = "The name of the MongoDB database"
+#   type        = string
+# }
 
-variable "redis_host" {
-  description = "The host address for the Redis cache"
-  type        = string
-  sensitive   = true
-}
+# variable "redis_host" {
+#   description = "The host address for the Redis cache"
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "weather_api_key" {
-  description = "The API key for the weather service"
-  type        = string
-  sensitive   = true
+# variable "weather_api_key" {
+#   description = "The API key for the weather service"
+#   type        = string
+#   sensitive   = true
+# }
+
+variable "kv_secrets" {
+  description = "A mapping of secret names to be stored in Key Vault"
+  type        = map(string)
+  default = {
+    mongo_connection_string = "mongo-connection-string"
+    mongo_db_name          = "mongo-db-name"
+    redis_host             = "redis-host"
+    weather_api_key        = "weather-api-key"
+  }
 }

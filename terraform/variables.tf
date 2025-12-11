@@ -18,10 +18,10 @@ variable "WEATHER_API_KEY" {
   type        = string
 }
 
-variable "TODO_MONGO_CONNSTR" {
-  description = "The connection string for MongoDB"
-  type        = string
-}
+# variable "TODO_MONGO_CONNSTR" {
+#   description = "The connection string for MongoDB"
+#   type        = string
+# }
 
 variable "REDIS_SESSION_HOST" {
   description = "The host address for the Redis cache"

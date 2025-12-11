@@ -76,23 +76,23 @@ variable "acr_id" {
 #   type        = string
 # }
 
-variable "mongo_connection_string" {
-  description = "The connection string for MongoDB"
+# variable "mongo_connection_string" {
+#   description = "The connection string for MongoDB"
+#   type        = string
+# }
+
+variable "mongo_connstr_secret_id" {
+  description = "The Key Vault secret ID for the MongoDB connection string"
   type        = string
 }
 
-variable "application_client_ID" {
-  description = "The Client ID of the Entra application"
+variable "mongo_db_name_secret_id" {
+  description = "The Key Vault secret ID for the MongoDB database name"
   type        = string
 }
 
-variable "weather_api_key" {
-  description = "API key for the weather service"
-  type        = string
-}
-
-variable "mongo_db_name" {
-  description = "The name of the MongoDB database"
+variable "weather_api_key_secret_id" {
+  description = "The Key Vault secret ID for the weather API key"
   type        = string
 }
 
@@ -100,6 +100,22 @@ variable "redis_connstr_secret_id" {
   description = "The Key Vault secret ID for the Redis connection string"
   type        = string
 }
+
+
+variable "application_client_ID" {
+  description = "The Client ID of the Entra application"
+  type        = string
+}
+
+# variable "weather_api_key" {
+#   description = "API key for the weather service"
+#   type        = string
+# }
+
+# variable "mongo_db_name" {
+#   description = "The name of the MongoDB database"
+#   type        = string
+# }
 
 variable "application_insights_connection_string" {
   description = "The connection string for Application Insights"

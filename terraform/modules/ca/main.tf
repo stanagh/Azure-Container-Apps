@@ -27,19 +27,19 @@ resource "azurerm_container_app" "ca" {
 
   secret {
     name                = "mongo-connstr"
-    key_vault_secret_id = var.mongo_connection_string
+    key_vault_secret_id = var.mongo_connstr_secret_id
     identity            = var.user_assigned_ids[0]
   }
 
   secret {
     name                = "mongo-db-name"
-    key_vault_secret_id = var.mongo_db_name
+    key_vault_secret_id = var.mongo_db_name_secret_id
     identity            = var.user_assigned_ids[0]
   }
 
   secret {
     name                = "weather-api-key"
-    key_vault_secret_id = var.weather_api_key
+    key_vault_secret_id = var.weather_api_key_secret_id
     identity            = var.user_assigned_ids[0]
   }
 
@@ -86,16 +86,6 @@ resource "azurerm_container_app" "ca" {
       env {
         name  = "ENTRA_APP_ID"
         value = var.application_client_ID
-      }
-
-      env {
-        name  = "WEBSITE_HOSTNAME"
-        value = "app.stanagh.website"
-      }
-
-      env {
-        name  = "BASE_URL"
-        value = "https://app.stanagh.website"
       }
 
       env {

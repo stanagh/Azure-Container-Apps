@@ -54,3 +54,5 @@ jobs:
         - name: Terraform Apply
           if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') }}
           run: terraform apply --auto-approve
+
+

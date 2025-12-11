@@ -29,7 +29,9 @@ resource "azuread_application_redirect_uris" "nodejs_demoapp_redirect_uris" {
   redirect_uris = ["https://login.microsoftonline.com/common/oauth2/nativeclient",
     "https://login.live.com/oauth20_desktop.srf",
     "https://app.stanagh.website/signin",
-    "http://localhost:3000/signin"
+    "http://localhost:3000/signin", 
+    "https://stanagh.website/signin"
+
   ]
 }
 
