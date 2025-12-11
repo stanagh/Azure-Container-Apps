@@ -43,13 +43,6 @@ jobs:
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-        - name: Export Terraform secrets
-          run: |
-            echo "TF_VAR_mongo_connection_string=${{ secrets.MONGO_CONNECTION_STRING }}" >> $GITHUB_ENV
-            echo "TF_VAR_mongo_db_name=${{ secrets.MONGO_DB_NAME }}" >> $GITHUB_ENV
-            echo "TF_VAR_weather_api_key=${{ secrets.WEATHER_API_KEY }}" >> $GITHUB_ENV
-            echo "TF_VAR_redis_connection_string=${{ secrets.REDIS_CONNECTION_STRING }}" >> $GITHUB_ENV
-
         - name: Terraform Init
           run: terraform init 
 
