@@ -49,7 +49,7 @@ jobs:
           run: terraform init 
 
         - name: Terraform Format
-          run: terraform fmt && terraform fmt -resursive 
+          run: terraform fmt && terraform fmt -recursive 
 
         - name: Terraform Plan
           if: ${{ github.event_name == 'push' || github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}
