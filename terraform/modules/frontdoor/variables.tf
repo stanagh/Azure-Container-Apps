@@ -79,3 +79,17 @@ variable "origin_host_name" {
   description = "The host name of the origin server"
   type        = string
 }
+
+variable "waf_policy_name" {
+  description = "The name of the WAF policy"
+  type        = string
+}
+
+variable "waf_security_policy_name" {
+  description = "The name of the WAF security policy"
+  type        = string
+}
+
+
+
+

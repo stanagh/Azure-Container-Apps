@@ -23,12 +23,13 @@ resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   name                = var.fdprofile_name
   resource_group_name = var.resource_group_name
   sku_name            = var.sku_name
+  tags                = var.tags
 
   response_timeout_seconds = 30
 }
 
 resource "azurerm_cdn_frontdoor_firewall_policy" "waf_policy" {
-  name                = "${var.fdprofile_name}-wafpolicy"
+  name                = var.waf_policy_name
   resource_group_name = var.resource_group_name
   sku_name            = azurerm_cdn_frontdoor_profile.fdProfile.sku_name
   mode                = "Prevention"
@@ -65,7 +66,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "waf_policy" {
 }
 
 resource "azurerm_cdn_frontdoor_security_policy" "waf_security_policy" {
-  name                     = "${var.fdprofile_name}-wafsecuritypolicy"
+  name                     = var.waf_security_policy_name
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
 
   security_policies {
