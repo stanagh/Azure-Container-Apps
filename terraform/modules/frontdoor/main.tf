@@ -142,7 +142,7 @@ resource "azurerm_cdn_frontdoor_route" "fdroute" {
   cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.fdendpoint.id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.fdorigin_group.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.fdorigin.id]
-  enabled = true
+  enabled                       = true
 
   forwarding_protocol    = "HttpsOnly"
   https_redirect_enabled = true

@@ -118,7 +118,7 @@ module "frontdoor" {
   dns_zone_id       = module.dns.dns_zone_id
   dns_zone_name     = module.dns.dns_zone_name
   cname_record_name = "app"
-  ttl = 300
+  ttl               = 300
 
   fdprofile_name      = "${local.region}-fd-${local.environment}-${random_integer.suffix.result}"
   fdendpoint_name     = "${local.region}-fde-${random_integer.suffix.result}"
@@ -129,6 +129,6 @@ module "frontdoor" {
   origin_name             = "${local.region}-fdo-${random_integer.suffix.result}"
   origin_host_name        = module.container_apps.container_app_hostname
   origin_host_name_header = module.container_apps.container_app_hostname
- 
+
 
 }
