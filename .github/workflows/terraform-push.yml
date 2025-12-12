@@ -1,9 +1,6 @@
 name: Terraform infrastructure provision 
 
 on:
-  push:
-    paths:
-      - 'terraform/**'
   workflow_dispatch:
     inputs:
       action:
