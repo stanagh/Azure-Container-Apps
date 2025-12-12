@@ -47,7 +47,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "waf_policy" {
   }
 
   custom_rule {
-    name                 = "rate-limit-rule"
+    name                 = "RateLimitRule"
     priority             = 1
     type                 = "RateLimitRule"
     rate_limit_threshold = 100
