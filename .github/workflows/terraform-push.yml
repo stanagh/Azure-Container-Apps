@@ -1,6 +1,11 @@
 name: Terraform infrastructure provision 
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'  # Trigger on changes in the terraform directory
   workflow_dispatch:
     inputs:
       action:
