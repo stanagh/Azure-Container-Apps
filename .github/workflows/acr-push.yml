@@ -1,9 +1,6 @@
 name: Build and Push Image to ACR
 
 on:
-    push:
-     paths:
-      - 'nodejs-demoapp/**'  # Trigger on changes in the application directory
     workflow_run:
       workflows: ["Terraform infrastructure provision"]
       types:

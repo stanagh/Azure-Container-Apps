@@ -1,9 +1,6 @@
 name: Terraform infrastructure provision 
 
 on:
-  push:
-    paths:
-      - 'terraform/**'
   workflow_dispatch:
     inputs:
       action:
@@ -45,6 +42,9 @@ jobs:
 
         - name: Terraform Init
           run: terraform init 
+
+        - name: Terraform Format
+          run: terraform fmt && terraform fmt -resursive 
 
         - name: Terraform Plan
           if: ${{ github.event_name == 'push' || github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}

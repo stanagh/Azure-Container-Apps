@@ -19,7 +19,6 @@ resource "azurerm_dns_cname_record" "app" {
   depends_on = [azurerm_cdn_frontdoor_route.fdroute]
 }
 
-
 resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   name                = var.fdprofile_name
   resource_group_name = var.resource_group_name
@@ -28,6 +27,60 @@ resource "azurerm_cdn_frontdoor_profile" "fdProfile" {
   response_timeout_seconds = 30
 }
 
+resource "azurerm_cdn_frontdoor_firewall_policy" "waf_policy" {
+  name                = "${var.fdprofile_name}-wafpolicy"
+  resource_group_name = var.resource_group_name
+  sku_name            = azurerm_cdn_frontdoor_profile.fdProfile.sku_name
+  mode                = "Prevention"
+
+  managed_rule {
+    type    = "Microsoft_DefaultRuleSet"
+    version = "2.1"
+    action  = "Block"
+  }
+
+  managed_rule {
+    type    = "Microsoft_BotManagerRuleSet"
+    version = "1.0"
+    action  = "Block"
+  }
+
+  custom_rule {
+    name                 = "rate-limit-rule"
+    priority             = 1
+    type                 = "RateLimitRule"
+    rate_limit_threshold = 100
+    action               = "Block"
+    match_condition {
+      match_variable = "RequestUri"
+      operator       = "Contains"
+      match_values   = ["/login", "/api/"]
+    }
+  }
+
+  request_body_check_enabled        = true
+  redirect_url                      = "https://learn.microsoft.com/docs/"
+  custom_block_response_status_code = 403
+  custom_block_response_body        = base64encode("Request blocked by WAF policy.")
+}
+
+resource "azurerm_cdn_frontdoor_security_policy" "waf_security_policy" {
+  name                     = "${var.fdprofile_name}-wafsecuritypolicy"
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fdProfile.id
+
+  security_policies {
+    firewall {
+      cdn_frontdoor_firewall_policy_id = azurerm_cdn_frontdoor_firewall_policy.waf_policy.id
+
+      association {
+        domain {
+          cdn_frontdoor_domain_id = azurerm_cdn_frontdoor_custom_domain.fdcustom_domain.id
+        }
+        patterns_to_match = ["/*"]
+      }
+    }
+  }
+}
 
 resource "azurerm_cdn_frontdoor_origin_group" "fdorigin_group" {
   name                     = var.fdorigin_group_name
@@ -89,7 +142,6 @@ resource "azurerm_cdn_frontdoor_route" "fdroute" {
   cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.fdendpoint.id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.fdorigin_group.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.fdorigin.id]
-  # cdn_frontdoor_rule_set_ids    = [azurerm_cdn_frontdoor_rule_set.fdrule_set.id]
   enabled = true
 
   forwarding_protocol    = "HttpsOnly"
