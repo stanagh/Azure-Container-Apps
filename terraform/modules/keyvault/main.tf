@@ -61,8 +61,8 @@ resource "azurerm_role_assignment" "secret_reader" {
 
 
 data "azurerm_key_vault_secret" "secrets" {
-  for_each    = local.kv_secrets
-  name        = each.value
+  for_each     = local.kv_secrets
+  name         = each.value
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on  = [azurerm_key_vault.kv, azurerm_role_assignment.secret_writer]
+  depends_on   = [azurerm_key_vault.kv, azurerm_role_assignment.secret_writer]
 }

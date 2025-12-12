@@ -74,8 +74,8 @@ variable "kv_secrets" {
   type        = map(string)
   default = {
     mongo_connection_string = "mongo-connection-string"
-    mongo_db_name          = "mongo-db-name"
-    redis_host             = "redis-host"
-    weather_api_key        = "weather-api-key"
+    mongo_db_name           = "mongo-db-name"
+    redis_host              = "redis-host"
+    weather_api_key         = "weather-api-key"
   }
 }

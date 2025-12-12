@@ -57,7 +57,7 @@ resource "azurerm_container_app" "ca" {
       image  = var.container_app_image
       cpu    = 0.25
       memory = "0.5Gi"
-      
+
       env {
         name        = "TODO_MONGO_CONNSTR"
         secret_name = "mongo-connstr"

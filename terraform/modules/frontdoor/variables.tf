@@ -3,12 +3,6 @@ variable "cname_record_name" {
   type        = string
 
 }
-
-# variable "cname_record_value" {
-#   description = "The value of the CNAME record."
-#   type        = string
-# }
-
 variable "ttl" {
   description = "The TTL (time to live) of the DNS A record in seconds."
   type        = number
@@ -51,11 +45,6 @@ variable "origin_host_name_header" {
   type        = string
 }
 
-# variable "frontdoor_custom_domain_name" {
-#   description = "The name of the Front Door custom domain"
-#   type        = string
-# }
-
 variable "fdendpoint_name" {
   description = "The name of the Front Door endpoint"
   type        = string
@@ -75,11 +64,6 @@ variable "origin_name" {
   description = "The name of the Front Door origin"
   type        = string
 }
-
-# variable "fdendpoint_name" {
-#     description = "The name of the Front Door endpoint"
-#     type        = string    
-# }
 
 variable "fdroute_name" {
   description = "The name of the Front Door route"

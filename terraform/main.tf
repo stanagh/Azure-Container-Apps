@@ -68,11 +68,6 @@ module "kv" {
   clientid_secret_writer_principal_id = data.azurerm_client_config.current.object_id
   secret_reader_principal_id          = azurerm_user_assigned_identity.ca_uai.principal_id
 
-  # mongo_connection_string = var.TODO_MONGO_CONNSTR
-  # mongo_connection_string = module.kv.mongo_connstr_secret_id
-  # mongo_db_name           = var.TODO_MONGO_DB
-  # redis_host              = var.REDIS_SESSION_HOST
-  # weather_api_key         = var.WEATHER_API_KEY
 }
 
 module "container_apps" {
@@ -90,24 +85,16 @@ module "container_apps" {
   acr_id           = module.acr.acr_id
   uai_id           = azurerm_user_assigned_identity.ca_uai.id
 
-
   log_analytics_id  = module.app_insights.log_analytics_workspace_id
   identity_type     = "UserAssigned"
   user_assigned_ids = [azurerm_user_assigned_identity.ca_uai.id]
 
   key_vault_name = module.kv.key_vault_name
 
-  # mongo_connection_string = module.kv.mongo_connstr_secret_id
-  # mongo_connstr_secret_id = module.kv.mongo_connstr_secret_id
-  # mongo_db_name           = module.kv.mongo_db_name_secret_id
-  # weather_api_key         = module.kv.weather_api_key_secret_id
-  # redis_connstr_secret_id = module.kv.redis_host_secret_id
-
-
-  mongo_connstr_secret_id = module.kv.key_vault_secret_ids["mongo_connstr"]
-  redis_connstr_secret_id    = module.kv.key_vault_secret_ids["redis_host"]
-  weather_api_key_secret_id     = module.kv.key_vault_secret_ids["weather_api_key"]
-  mongo_db_name_secret_id        = module.kv.key_vault_secret_ids["mongo_db_name"]
+  mongo_connstr_secret_id   = module.kv.key_vault_secret_ids["mongo_connstr"]
+  redis_connstr_secret_id   = module.kv.key_vault_secret_ids["redis_host"]
+  weather_api_key_secret_id = module.kv.key_vault_secret_ids["weather_api_key"]
+  mongo_db_name_secret_id   = module.kv.key_vault_secret_ids["mongo_db_name"]
 
   application_insights_connection_string = module.app_insights.connection_string
   application_client_ID                  = module.azuread_application_registration.client_id
@@ -131,7 +118,6 @@ module "frontdoor" {
   dns_zone_id       = module.dns.dns_zone_id
   dns_zone_name     = module.dns.dns_zone_name
   cname_record_name = "app"
-  # cname_record_value         = module.container_apps.ca_latest_revision_fqdn
   ttl = 300
 
   fdprofile_name      = "${local.region}-fd-${local.environment}-${random_integer.suffix.result}"
@@ -140,8 +126,9 @@ module "frontdoor" {
   fdroute_name        = "${local.region}-fdr-${random_integer.suffix.result}"
   host_name           = "app.${local.domain_name}"
 
-  origin_name      = "${local.region}-fdo-${random_integer.suffix.result}"
-  origin_host_name = module.container_apps.container_app_hostname
+  origin_name             = "${local.region}-fdo-${random_integer.suffix.result}"
+  origin_host_name        = module.container_apps.container_app_hostname
   origin_host_name_header = module.container_apps.container_app_hostname
+ 
 
 }
