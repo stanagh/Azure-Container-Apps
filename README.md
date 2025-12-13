@@ -4,7 +4,7 @@ This project demonstrates a production-style deployment of a containerized Node.
 
 The application is publicly accessible via HTTPS and supports Microsoft Entra ID (Azure AD) authentication.
 
-🧱 Architecture Overview
+## 🧱 Architecture Overview
 The solution follows a layered architecture:
 - CI/CD: GitHub Actions builds and pushes container images
 - Infrastructure: Terraform provisions all Azure resources
@@ -50,9 +50,9 @@ The solution follows a layered architecture:
 ### Application 
 - Express is used as a lightweight web framework to handle routing, middleware, and server-side rendering.
 - MSAL is used to integrate Microsoft Entra ID authentication using OAuth 2.0 / OpenID Connect.
--- Authentication flows are handled securely with redirect-based login and token acquisition.
+> Authentication flows are handled securely with redirect-based login and token acquisition.
 - MongoDB is used as the application data store for the Todo feature.
--- The application connects using configuration supplied at runtime, keeping the container image environment-agnostic.
+> The application connects using configuration supplied at runtime, keeping the container image environment-agnostic.
 
 ### Docker
 - A non-root user is defined in the Dockerfile to follow the principle of least privilege and reduce the risk of elevated permissions at runtime.
@@ -76,14 +76,14 @@ The solution follows a layered architecture:
 - WAF enabled to protect against common web attack
 - Least-privilege access across resources
 
-### Key Learnings 🧠 
+## Key Learnings 🧠 
 - End-to-end Azure Container Apps deployment
 - Real-world Front Door + WAF configuration
 - Secure identity-based secret management
 - Debugging reverse proxy and authentication flows
 - Designing cloud architectures with operational maturity
 
-### 📌 Future Improvements 
+## 📌 Future Improvements 
 
 - Multi-environment setup (dev / staging / prod)
 - Blue/green or canary deployments
@@ -93,9 +93,11 @@ The solution follows a layered architecture:
 https://github.com/user-attachments/assets/242cffe1-adcb-4e3a-9579-e7a0cfb39fe5
 
 🌍 Live Application
-The application is accessible via:
-https://stanagh.website
-https://app.stanagh.website
+
+Accessible via:
+> https://stanagh.website
+
+> https://app.stanagh.website
 
 
    
