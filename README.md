@@ -1,3 +1,4 @@
+
 # Azure Container Apps + Front Door 
 This project demonstrates a production-style deployment of a containerized Node.js application on Microsoft Azure, using Infrastructure as Code (Terraform), CI/CD pipelines, Azure Container Apps and Azure Front Door with WAF for secure global access.
 
@@ -14,8 +15,7 @@ The solution follows a layered architecture:
 - State Management: Terraform remote backend in Azure Storage
 
 ## Architecture Diagram
-<img width="1967" height="1052" alt="image" src="https://github.com/user-attachments/assets/152cbe69-0c7c-419e-8314-408875558e07" />
-
+![Image](https://github.com/user-attachments/assets/fcb6fbbe-3326-4a32-b86a-c5be39f57703)
 
 ## Running the Project locally 🚦
 1. Clone the repository to your local machine
@@ -23,7 +23,6 @@ The solution follows a layered architecture:
    ```bash
    npm install
    npm start
-   npm run build
    ```
 2. Then browse the application: 
    ```bash
@@ -34,13 +33,13 @@ The solution follows a layered architecture:
    
 ## Repository structure
    ```bash
- .github/workflows/  # GitHub Actions workflows
- nodejs-demoapp/  # Node.js application source
+ .github/workflows/   # GitHub Actions workflows
+ nodejs-demoapp/      # Node.js application source
     └─ src/
     ├─ Dockerfile
     └─ docker-compose.yml 
     └─ .dockerignore 
- /terraform            # Terraform modules & root configs for Azure resources
+ /terraform           # Terraform modules & root configs for Azure resources
     ├─ modules/
     └─ main.tf, variables.tf, outputs.tf
     README.md
@@ -56,7 +55,7 @@ The solution follows a layered architecture:
 -- The application connects using configuration supplied at runtime, keeping the container image environment-agnostic.
 
 ### Docker
-- A non-root user its defined in the Dockerfile to least prevent elevated permissions. 
+- A non-root user is defined in the Dockerfile to follow the principle of least privilege and reduce the risk of elevated permissions at runtime.
 - Multi-stage build was used to optimise the image size by separating build dependencies from the final lightweight runtime image.
 
 ### Networking & Security
@@ -70,7 +69,7 @@ The solution follows a layered architecture:
 - Logs and metrics are centralised in a Log Analytics Workspace for troubleshooting and analysis.
 - This provides visibility into application health and runtime behaviour without modifying application code.
   
- ### Security Highlights
+ ### Security Highlights 🔐
 - No secrets stored in code or pipelines
 - Managed Identity used for secure access to Key Vault
 - HTTPS enforced at the edge (Azure Front Door)
@@ -84,7 +83,19 @@ The solution follows a layered architecture:
 - Debugging reverse proxy and authentication flows
 - Designing cloud architectures with operational maturity
 
+### 📌 Future Improvements 
+
+- Multi-environment setup (dev / staging / prod)
+- Blue/green or canary deployments
+- Autoscaling tuning
+
 ## Video 🍿
+https://github.com/user-attachments/assets/242cffe1-adcb-4e3a-9579-e7a0cfb39fe5
+
+🌍 Live Application
+The application is accessible via:
+https://stanagh.website
+https://app.stanagh.website
 
 
    
